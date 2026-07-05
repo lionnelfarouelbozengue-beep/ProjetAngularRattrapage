@@ -7,17 +7,17 @@
     ></span>
   </div>
 
-  <div class="keypad-grid">
-    <button
-      *ngFor="let key of keys"
-      class="keypad-btn"
-      [class.empty]="key === ''"
-      [disabled]="key === ''"
-      (click)="press(key)"
-    >
-      {{ key }}
-    </button>
-  </div>
+  <input
+    #codeInput
+    type="password"
+    inputmode="numeric"
+    [attr.maxlength]="maxLength"
+    [ngModel]="code"
+    (ngModelChange)="onInput($event)"
+    class="secret-input"
+    placeholder="Saisir le code secret"
+    autocomplete="one-time-code"
+  />
 
   <div class="keypad-actions">
     <button class="btn-secondary" (click)="onClose()">Fermer</button>
