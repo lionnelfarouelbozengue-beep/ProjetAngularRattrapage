@@ -1,0 +1,18 @@
+<div class="profile-screen">
+  <header class="transfer-header">
+    <button class="back-btn" (click)="goBack()">←</button>
+    <h2>Mon profil</h2>
+  </header>
+
+  <div class="profile-avatar">{{ user()?.firstName?.charAt(0) }}</div>
+
+  <div class="profile-info">
+    <p class="label">Nom complet</p>
+    <p class="value">{{ user()?.firstName }} {{ user()?.lastName }}</p>
+
+    <p class="label">Numéro de téléphone</p>
+    <p class="value">{{ user()?.phone }}</p>
+  </div>
+
+  <button class="btn-danger" (click)="logout()">Se déconnecter</button>
+</div>

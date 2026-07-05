@@ -1,0 +1,28 @@
+<div class="login-screen">
+  <div class="login-logo">
+    <div class="om-logo">OM</div>
+    <h1>OM Pay</h1>
+    <p>Envoyez, recevez, payez en toute simplicité</p>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+    <label for="phone">Numéro de mobile</label>
+    <div class="phone-input">
+      <span class="prefix">+221</span>
+      <input
+        id="phone"
+        type="tel"
+        formControlName="phone"
+        placeholder="77 765 9595"
+        maxlength="9"
+      />
+    </div>
+
+    <p class="error" *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
+      Veuillez saisir un numéro valide (9 chiffres).
+    </p>
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+    <button type="submit" class="btn-primary">Se connecter</button>
+  </form>
+</div>

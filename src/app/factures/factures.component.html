@@ -1,0 +1,63 @@
+<div class="transfer-screen">
+  <header class="transfer-header">
+    <button class="back-btn" (click)="goBack()" *ngIf="step() < 4">←</button>
+    <h2>Payer une facture</h2>
+  </header>
+
+  <!-- Étape 1 : choix de l'opérateur -->
+  <div *ngIf="step() === 1" class="transfer-step">
+    <div class="biller-item" *ngFor="let biller of billers()" (click)="selectBiller(biller)">
+      <span class="biller-icon">{{ biller.icon }}</span>
+      <div>
+        <p class="transaction-title">{{ biller.name }}</p>
+        <p class="transaction-sub">{{ biller.category }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Étape 2 : référence + montant -->
+  <form *ngIf="step() === 2" [formGroup]="billForm" (ngSubmit)="goToSecretCode()" class="transfer-step">
+    <p class="info-text">{{ selectedBiller?.icon }} {{ selectedBiller?.name }}</p>
+
+    <label>Numéro de facture / compteur</label>
+    <input type="text" formControlName="reference" placeholder="Ex : 0123456789" />
+    <p class="error" *ngIf="billForm.get('reference')?.touched && billForm.get('reference')?.invalid">
+      Veuillez saisir une référence valide.
+    </p>
+
+    <label>Montant à payer</label>
+    <input type="number" formControlName="amount" placeholder="Ex : 15000" />
+    <p class="error" *ngIf="billForm.get('amount')?.hasError('required') && billForm.get('amount')?.touched">
+      Le montant est requis.
+    </p>
+    <p class="error" *ngIf="billForm.get('amount')?.hasError('min')">
+      Montant minimum : 100 FCFA.
+    </p>
+    <p class="error" *ngIf="billForm.get('amount')?.hasError('insufficient')">
+      Solde insuffisant.
+    </p>
+
+    <button type="submit" class="btn-primary">Continuer</button>
+  </form>
+
+  <!-- Étape 3 : code secret -->
+  <div *ngIf="step() === 3" class="transfer-step">
+    <p class="info-text">Saisissez votre code secret pour confirmer</p>
+    <app-keypad
+      [code]="secretCode"
+      [maxLength]="4"
+      (codeChange)="onCodeChange($event)"
+      (validate)="onValidateSecretCode($event)"
+      (close)="onCloseKeypad()"
+    ></app-keypad>
+    <p class="error" *ngIf="secretCodeError">{{ secretCodeError }}</p>
+  </div>
+
+  <!-- Étape 4 : confirmation -->
+  <div *ngIf="step() === 4" class="transfer-step success-step">
+    <div class="success-icon">✅</div>
+    <h3>Paiement réussi !</h3>
+    <p>Votre facture {{ selectedBiller?.name }} de {{ (billForm.value.amount ?? 0) | number }} FCFA a bien été payée.</p>
+    <button class="btn-primary" (click)="goToDashboard()">Retour à l'accueil</button>
+  </div>
+</div>

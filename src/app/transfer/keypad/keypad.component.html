@@ -1,0 +1,32 @@
+<div class="keypad-wrapper">
+  <div class="code-dots">
+    <span
+      class="dot"
+      *ngFor="let i of [].constructor(maxLength); let idx = index"
+      [class.filled]="idx < code.length"
+    ></span>
+  </div>
+
+  <div class="keypad-grid">
+    <button
+      *ngFor="let key of keys"
+      class="keypad-btn"
+      [class.empty]="key === ''"
+      [disabled]="key === ''"
+      (click)="press(key)"
+    >
+      {{ key }}
+    </button>
+  </div>
+
+  <div class="keypad-actions">
+    <button class="btn-secondary" (click)="onClose()">Fermer</button>
+    <button
+      class="btn-primary"
+      [disabled]="code.length < maxLength"
+      (click)="onValidate()"
+    >
+      ✓ Valider
+    </button>
+  </div>
+</div>

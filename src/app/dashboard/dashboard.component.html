@@ -1,0 +1,69 @@
+<div class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="greeting">Bonjour, {{ user()?.firstName }} 👋</p>
+      <p class="phone">{{ user()?.phone }}</p>
+    </div>
+    <button class="avatar" (click)="goToProfile()">
+      {{ user()?.firstName?.charAt(0) }}
+    </button>
+  </header>
+
+  <div class="balance-card">
+    <p class="balance-label">Solde disponible</p>
+    <div class="balance-row">
+      <span class="balance-amount">
+        {{ balanceVisible() ? (user()?.balance | number) + ' FCFA' : '•••••••• FCFA' }}
+      </span>
+      <button class="eye-btn" (click)="toggleBalance()">
+        {{ balanceVisible() ? '🙈' : '👁️' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="actions-row">
+    <button class="action-btn" (click)="goToTransfer()">
+      <span class="icon">💸</span>
+      Transférer
+    </button>
+    <button class="action-btn" (click)="goToFactures()">
+      <span class="icon">🧾</span>
+      Payer
+    </button>
+    <button class="action-btn">
+      <span class="icon">⚡</span>
+      Max it
+    </button>
+  </div>
+
+  <div class="search-block">
+    <input
+      type="text"
+      [(ngModel)]="searchValue"
+      placeholder="Numéro / code marchand"
+    />
+    <button class="btn-primary" (click)="onValider()">Valider</button>
+  </div>
+
+  <div class="history-preview">
+    <div class="history-preview-header">
+      <h3>Historique récent</h3>
+      <button (click)="goToHistorique()">Voir tout</button>
+    </div>
+
+    <div class="transaction-item" *ngFor="let t of recentTransactions()">
+      <div class="transaction-info">
+        <p class="transaction-title">
+          {{ t.type === 'transfer' ? 'Transfert' : t.type === 'payment' ? 'Paiement' : 'Rechargement' }}
+        </p>
+        <p class="transaction-sub">{{ t.recipientName || t.recipient }}</p>
+      </div>
+      <div class="transaction-right">
+        <p class="transaction-amount" [class.negative]="t.amount < 0" [class.positive]="t.amount > 0">
+          {{ t.amount > 0 ? '+' : '' }}{{ t.amount | number }} FCFA
+        </p>
+        <p class="transaction-date">{{ t.date | date:'short' }}</p>
+      </div>
+    </div>
+  </div>
+</div>

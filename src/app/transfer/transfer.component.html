@@ -1,0 +1,53 @@
+<div class="transfer-screen">
+  <header class="transfer-header">
+    <button class="back-btn" (click)="goBack()" *ngIf="step() < 4">←</button>
+    <h2>Transférer de l'argent</h2>
+  </header>
+
+  <!-- Étape 1 : numéro du bénéficiaire -->
+  <form *ngIf="step() === 1" [formGroup]="recipientForm" (ngSubmit)="goToAmount()" class="transfer-step">
+    <label>Numéro du bénéficiaire</label>
+    <input type="tel" formControlName="phone" placeholder="Ex : 772775076" />
+    <p class="error" *ngIf="recipientForm.get('phone')?.touched && recipientForm.get('phone')?.invalid">
+      Veuillez saisir un numéro valide.
+    </p>
+    <button type="submit" class="btn-primary">Continuer</button>
+  </form>
+
+  <!-- Étape 2 : montant -->
+  <form *ngIf="step() === 2" [formGroup]="amountForm" (ngSubmit)="goToSecretCode()" class="transfer-step">
+    <label>Montant à envoyer</label>
+    <input type="number" formControlName="amount" placeholder="Ex : 5000" />
+    <p class="error" *ngIf="amountForm.get('amount')?.hasError('required') && amountForm.get('amount')?.touched">
+      Le montant est requis.
+    </p>
+    <p class="error" *ngIf="amountForm.get('amount')?.hasError('min')">
+      Montant minimum : 100 FCFA.
+    </p>
+    <p class="error" *ngIf="amountForm.get('amount')?.hasError('insufficient')">
+      Solde insuffisant.
+    </p>
+    <button type="submit" class="btn-primary">Continuer</button>
+  </form>
+
+  <!-- Étape 3 : code secret -->
+  <div *ngIf="step() === 3" class="transfer-step">
+    <p class="info-text">Saisissez votre code secret pour confirmer</p>
+    <app-keypad
+      [code]="secretCode"
+      [maxLength]="4"
+      (codeChange)="onCodeChange($event)"
+      (validate)="onValidateSecretCode($event)"
+      (close)="onCloseKeypad()"
+    ></app-keypad>
+    <p class="error" *ngIf="secretCodeError">{{ secretCodeError }}</p>
+  </div>
+
+  <!-- Étape 4 : confirmation -->
+  <div *ngIf="step() === 4" class="transfer-step success-step">
+    <div class="success-icon">✅</div>
+    <h3>Transfert réussi !</h3>
+    <p>Votre transfert de {{ (amountForm.value.amount ?? 0) | number }} FCFA a bien été effectué.</p>
+    <button class="btn-primary" (click)="goToDashboard()">Retour à l'accueil</button>
+  </div>
+</div>
